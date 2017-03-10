@@ -1,52 +1,44 @@
 from transcribe import transcribe
 from translation import translation
-from codon_dict import codonDict
+from reverse_compliment import rev_comp
 
 f = open('rosalind_orf.txt', 'r')
-dna = f.readlines()
+text = f.readlines()
 dna_string = ''
-for i in dna:
+for i in text:
     i = i.rstrip('\n')
     i = i.rstrip('\t')
     dna_string += i
 
 
-def open_reading_frames(text):
-    protein_cand = list()
-    protein = ''
-    rna1RFrame1 = ''
-    rna1RFrame2 = ''
-    rna1RFrame3 = ''
-    rna2RFrame1 = ''
-    rna2RFrame2 = ''
-    rna2RFrame3 = ''
-    rna1 = ''
-    rna1 = transcribe(text)
-    rna2 = ''
-    rna2 = transcribe(text[::-1])
+def open_reading_frames(rna):
+    start = 0
+    peptide = translation(rna)
+    proteins = []
 
-    rna1RFrame1 = rna1[:]
-    rna1RFrame2 = rna1[1:]
-    rna1RFrame3 = rna1[2:]
-    rna2RFrame1 = rna2[:]
-    rna2RFrame2 = rna2[1:]
-    rna2RFrame3 = rna2[2:]
-
-    rna1RFrame1 = translation(rna1RFrame1)
-    rna1RFrame2 = translation(rna1RFrame2)
-    rna1RFrame3 = translation(rna1RFrame3)
-    rna2RFrame1 = translation(rna2RFrame1)
-    rna2RFrame2 = translation(rna2RFrame2)
-    rna2RFrame3 = translation(rna2RFrame3)
-
-    numM = rna1RFrame1.find('M')
-    numSTP = rna1RFrame1.find('STP')
+    while not start == -1:
+        start = peptide.find('M', start)
+        stop = peptide.find('STP', start + 1)
+        if not stop == -1:
+            pep = peptide[start:stop]
+            if pep:
+                proteins.append(pep)
+        if not start == -1:
+            start += 1
+    return proteins
 
 
+def all_frames(dna):
+    rna = transcribe(dna)
+    comp_rna = transcribe(rev_comp(dna))
+    proteins = []
+    for i in xrange(0,3):
+        proteins += open_reading_frames(rna[i:])
+        proteins += open_reading_frames(comp_rna[i:])
+    return list(set(proteins))
 
 
-    return rna1RFrame1, numM, numSTP
+output = open_reading_frames('AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG')
 
-
-
-print open_reading_frames('AGCCATGTAGCTAACTCAGGTTACATGGGGATGACCCCGCGACTTGGATTAGAGTCTCTTTTGGAATAAGCCTGAATGATCCGAGTAGCATCTCAG')
+for i in output:
+    print i
