@@ -2,7 +2,7 @@
 Learning python in a Computational Methods in Biology class
 
 To use files:
-The .py files include fucntions that use .txt files.  Functions have the .txt call commented out so they can imported to other .py files and used without compromising data.  To use please download all .py and .txt files as some .py use functions located in other files.
+The .py files include functions that use .txt files.  Functions have the .txt call commented out so they can imported to other .py files and used without compromising data.  To use please download all .py and .txt files as some .py use functions located in other files.
 
 These functions are used to manipulate and analyze DNA and RNA, to name a few, to locate OriC (Origin of Replication in a cell), analyze translation, trascription and protein synthesis.
 
